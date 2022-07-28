@@ -55,7 +55,7 @@ function init() {
     /** LISTEN FOR EVENTS **/
     submitButton.addEventListener("click", (event) => {    
         // TODO: Add typeInput object to get the clicked radio button (see Part B, 3a)
-        let typeInput = document.querySelector("input[name=type-input]: checked")
+        let typeInput = document.querySelector("input[name=type-input]:checked")
         // TODO: Validate the type and keyword inputs (see Part B, 5)
         // TODO: Call the handler function (see Part B, 3c)
         handleSubmitClick(typeInput);
@@ -74,7 +74,7 @@ function init() {
     function handleSubmitClick(type) {       
         // TODO: Call the resetResultsArea() function (see Part D, 2f)
         // TODO: Give currentDrinks all of the objects from allDrinks (see Part B, 3b-1)
-        currentDrinks = allDrinks.slice(); // could also put zero in (). takes a slice of entire array to copy its contents
+        currentDrinks = allDrinks.slice(0); // could also put zero in (). takes a slice of entire array to copy its contents
         // TODO: Call filterDrinks and pass in the three input values (see Part B, 3b-2)  
         filterDrinks(type, categoryInput.value, keywordInput.value);
 
@@ -93,7 +93,7 @@ function init() {
         } else {
             // Update values
             // TODO: Change the value of the innerHTML for noResultsText (see Part B, 3b-3)
-            noResults.innerHTML = "No results found. Try again!";
+            noResultsText.innerHTML = "No results found. Try again!";
             // Trigger animations
             // TODO: Call handleResetClick() (see Part D, 2f)         
         }
