@@ -6,6 +6,9 @@
 
 /** GLOBAL VARIABLES **/
 // TODO: initialize three empty arrays (see Part A, 2)
+categories = []; // fill w fetch
+allDrinks = []; // data from json, over 400 of them, fill wz fetch 
+currentDrinks = []; // filtered drinks for displaying
 
 let colorClasses = {
     // TODO: add properties relating drink type with CSS class (see Part B, 6)
@@ -13,7 +16,9 @@ let colorClasses = {
 
 /** WINDOW LOAD LISTENER **/
 window.addEventListener("load", function() {
+
     // TODO: call fetch function for drinks (see Part A, 3)
+    fetchDrinks();
     // Note: init() should be called at the end of fetchCategories() to make sure fetched data has returned from the API before the page is rendered. Each fetch function is chained to another this way.
 });
 
@@ -26,22 +31,36 @@ function init() {
     // TODO: Add searchArea object (see Part D, 2a)
     // TODO: Add keywordInput, categoryInput, submitButton, and resetButton (see Part B, 1a)
 
+    const keywordInput = document.getElementById("keyword-input");
+    const categoryInput = document.getElementById("category-input");
+    const submitButton = document.getElementById("submit-button");
+    const resetButton = document.getElementById("reset-button");
+
     // BELOW FORM
     // TODO: Add resultsArea object (see Part D, 2a)
     // TODO: Add searchResults, noResults, and noResultsText (see Part B, 1b)
+
+    const searchResults = document.getElementById("search-results");
+    const noResults = document.getElementById("no-results");
+    const noResultsText = document.getElementById("no-results-text");
+
     // TODO: Add emptyGlass object (see Part D, 2a)
 
     /** POPULATE DROPDOWN INPUT WITH FETCHED DATA **/
     // TODO: Set innerHTML of dropdown box (see Part B, 2)
+    categoryInput.innerHTML = setCategoryOptions(); 
 
     // TODO: Copy in initial triggers for animations (see Part D, 2c)
 
     /** LISTEN FOR EVENTS **/
-    submitButton.addEventListener("click", () => {    
+    submitButton.addEventListener("click", (event) => {    
         // TODO: Add typeInput object to get the clicked radio button (see Part B, 3a)
+        let typeInput = document.querySelector("input[name=type-input]: checked")
         // TODO: Validate the type and keyword inputs (see Part B, 5)
         // TODO: Call the handler function (see Part B, 3c)
+        handleSubmitClick(typeInput);
         // TODO: Prevent the default page reload (see Part B, 3d)
+        event.preventDefault();
     });
 
     resetButton.addEventListener("click", () => {
@@ -55,19 +74,26 @@ function init() {
     function handleSubmitClick(type) {       
         // TODO: Call the resetResultsArea() function (see Part D, 2f)
         // TODO: Give currentDrinks all of the objects from allDrinks (see Part B, 3b-1)
-        // TODO: Call filterDrinks and pass in the three input values (see Part B, 3b-2)     
+        currentDrinks = allDrinks.slice(); // could also put zero in (). takes a slice of entire array to copy its contents
+        // TODO: Call filterDrinks and pass in the three input values (see Part B, 3b-2)  
+        filterDrinks(type, categoryInput.value, keywordInput.value);
+
         if (currentDrinks.length > 0) {
             // TODO: alphabetize results by name of drink - see sort function at bottom (see Part B, 3b-3)
-            
+            sortByName(currentDrinks, 0, currentDrinks.length - 1);
             // Update values
             // TODO: add the recipe cards to the innerHTML of searchResults
             // TODO: change the value of 'display' for noResults to hide it
-            
+
+            searchResults.innerHTML = setRecipeCards();
+            noResults.style.display = "none";
+
             // Trigger animations
             // TODO: Add setTimeout function with fadeInResultsArea() (see Part D, 2f)
         } else {
             // Update values
             // TODO: Change the value of the innerHTML for noResultsText (see Part B, 3b-3)
+            noResults.innerHTML = "No results found. Try again!";
             // Trigger animations
             // TODO: Call handleResetClick() (see Part D, 2f)         
         }
@@ -142,8 +168,10 @@ function fetchCategories() {
     fetch("https://www.thecocktaildb.com/api/json/v1/1/list.php?c=list").then( function(response) {
         response.json().then( function(json) {
             let categoryObjects = json.drinks;
+            console.log(json);
             categories = categoryObjects.map(category => category.strCategory.split(" / ").join("/"));
             categories.sort();
+            console.log(categories);
             console.log("Categories loaded.");
             init();       
         });
